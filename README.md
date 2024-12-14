@@ -33,10 +33,10 @@ Then I subtracted the 2ac90 offset and looked at the memory in that location:<br
 Cool! We've found the location of the system call in memory! Now what points to the puts entry we want to replace?<br><br>
 <img src="/puts.png">
 <br>
-So now we know the address we found for system just needs to be written where the pointer for puts. Unfortunately, because of the dynamic locations which are generated every time the program is run and the fact that the payload can not be crafted manually and sent to the program beforehand, a script must be used to complete this challenge. But at least we have a solid grasp of what is going on behind the scenes.<br><br>
+So now we know the address we found for system just needs to be written where the pointer is for puts. Unfortunately, because of the dynamic locations which are generated every time the program is run and the fact that the payload can not be crafted manually and sent to the program beforehand, a script must be used to complete this challenge. But at least we have a solid grasp of what is going on behind the scenes.<br><br>
 <h2>Final Exploit</h2>
 I won't go over the breakdown of the printf vulnerability because I already covered that in my <a href="https://github.com/tlkroll/format-string-exploitation/blob/main/README.md">format string 2</a> write-up, but I used those methods to determine that our printf string is in location 38. Using all of the information we have so far, here is the script I used, adapted from Wiebe Willems's script <a href="https://blog.nviso.eu/2024/05/23/format-string-exploitation-a-hands-on-exploration-for-linux/">here</a>:<br><br>
 <img src="/fs3-9.png">
 <br>
-After running this script we have a shell on the remote server and can just cat the flag.txt file!<br><br>
+After running this script we have a shell on the remote server and can just cat the flag.txt file! (I wasn't able to do this in the picoCTF webshell and had to use a Kali VM)<br><br>
 I hope this was helpful. This challenge was a great way to learn about the Global Offset Table and also get some practice with gdb and pwntools. Reverse engineering and binary exploitation are the most fun things I have learned about so on my cybersecurity journey!
