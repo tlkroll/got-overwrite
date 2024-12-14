@@ -14,7 +14,7 @@ Here is the source code for this function:<br><br>
 Looking at the source, we can identify two goals. The main objective will be to overwrite the pointer to the puts function with a pointer to the system function so that instead of printing /bin/sh, the program will make a system call to /bin/sh instead, granting us a shell. To accomplish this, we will need to exploit the vulnerable printf function which repeats user input.
 <br><br>
 <h2>The Global Offset Table</h2>
-My understanding of the GOT is that it is a copy of libc used by a program which is stored in a random memory location in order to prevent the type of attack we are performing here. But because we have access to the copy of libc being used and the location of setvbuf has been leaked, we are able to calculate offsets and find the memory locations of other functions within libc.<br><br>
+My understanding of the GOT is that it is a copy of libc used by a program which is stored in a random memory location at runtime in order to prevent the type of attack we are performing here. But because we have access to the copy of libc being used and the location of setvbuf has been leaked, we are able to calculate offsets and find the memory locations of other functions within libc.<br><br>
 Finding the locations of functions and calculating their offsets can all be accomplished using pwntools, but I wanted to know exactly what was going on under the hood, so I took a look at the libc file which was supplied with this challenge. First, I used the readelf function to find the location of setvbuf:<br><br>
 <img src="/fs3-4.png">
 <br>
@@ -38,5 +38,6 @@ So now we know the address we found for system just needs to be written where th
 I won't go over the breakdown of the printf vulnerability because I already covered that in my <a href="https://github.com/tlkroll/format-string-exploitation/blob/main/README.md">format string 2</a> write-up, but I used those methods to determine that our printf string is in location 38. Using all of the information we have so far, here is the script I used, adapted from Wiebe Willems's script <a href="https://blog.nviso.eu/2024/05/23/format-string-exploitation-a-hands-on-exploration-for-linux/">here</a>:<br><br>
 <img src="/fs3-9.png">
 <br>
-After running this script we have a shell on the remote server and can just cat the flag.txt file! (I wasn't able to do this in the picoCTF webshell and had to use a Kali VM)<br><br>
-I hope this was helpful. This challenge was a great way to learn about the Global Offset Table and also get some practice with gdb and pwntools. Reverse engineering and binary exploitation are the most fun things I have learned about so on my cybersecurity journey!
+After running this script we have a shell on the remote server and can just cat the flag.txt file!<br>
+(I wasn't able to do this in the picoCTF webshell and had to use a Kali VM)<br><br>
+I hope this was helpful. This challenge was a great way to learn about the Global Offset Table and also get some practice with gdb and pwntools. Reverse engineering and binary exploitation are the most fun things I have learned about so far on my cybersecurity journey!
