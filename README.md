@@ -35,4 +35,5 @@ Cool! We've found the location of the system call in memory! Unfortunately, beca
 I won't go over the breakdown of the printf vulnerability because I already covered that in my <a href="https://github.com/tlkroll/format-string-exploitation/blob/main/README.md">format string 2</a> write-up, but I used those methods to determine that our printf string is in location 38. Using all of the information we have so far, here is the script I used, adapted from Wiebe Willems's script <a href="https://blog.nviso.eu/2024/05/23/format-string-exploitation-a-hands-on-exploration-for-linux/">here</a>:<br><br>
 <img src="/fs3-9.png">
 <br>
-
+After running this script we have a shell on the remote server and can just cat the flag.txt file!<br> 
+I hope this was helpful. This challenge was a great way to learn about the Global Offset Table and also get some practice with gdb and pwntools. Reverse engineering and binary exploitation are the most fun things I have learned about so far on this path.
