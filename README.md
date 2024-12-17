@@ -31,9 +31,23 @@ Then I subtracted the <b>2ac90</b> offset from the leaked address and looked at 
 <img src="/fs3-8.png">
 <br>
 Cool! We've found the location of the <b>system</b> call in memory! Now what points to the <b>puts</b> entry we want to replace?<br><br>
-<img src="/puts.png">
+<h2>The GOT, PLT, and GOT/PLT</h2>
+<h3>GOT</h3>
+As previously mentioned, the Global Offset Table (GOT) is a copy of libc stored in a random location in memory. The location of these addresses must be found at runtime, which is why the setvbuf leak in this program is so valuable.<br>
+<h3>PLT</h3>
+The Procedure Linkage Table (PLT) is where libc functions are referenced locally in this program. In this example, <b>puts</b> is located at <b>0x401080</b>:<br><br>
+<img src="/puts2.png">
+<h3>GOT/PLT</h3>
+This is the middle-man where the libc functions which are called locally are linked to the GOT. Here we can see the <b>got.plt</b> entry by examining the instructions following the local call. Looking at the memory in this location you can see the GOT address for <b>puts</b>:<br><br>
+<img src="/fs3-12.png"><br>
+Now all we need to do is overwrite this entry with the offset we calculated earlier:<br><br>
+<img src="/fs3-13.png"><br>
+And after some bugginess, we have a shell!<br><br>
+<img src="/fs3-14.png"><br>
+Entering an <b>ls</b> command shows the contents of the local directory where I was working:<br><br>
+<img src="/fs3-15.png"><br>
 <br>
-So now we know the address we found for <b>system</b> just needs to be written where the pointer is for <b>puts</b>. Unfortunately, because of the dynamic locations which are generated every time the program is run and the fact that the payload can not be crafted manually and sent to the program beforehand, a script must be used to complete this challenge. But at least we have a solid grasp of what is going on behind the scenes.<br><br>
+Unfortunately, because of the dynamic locations which are generated every time the program is run and the fact that the payload can not be crafted manually and sent to the program beforehand, a script must be used to complete this challenge. But at least we have a solid grasp of what is going on behind the scenes.<br><br>
 <h2>Final Exploit</h2>
 I won't go over the breakdown of the printf vulnerability because I already covered that in my <a href="https://github.com/tlkroll/format-string-exploitation/blob/main/README.md">format string 2</a> write-up, but I used those methods to determine that our printf string is in location 38. Using all of the information we have so far, here is the script I used, adapted from Wiebe Willems's script <a href="https://blog.nviso.eu/2024/05/23/format-string-exploitation-a-hands-on-exploration-for-linux/">here</a>:<br><br>
 <img src="/fs3-9.png">
